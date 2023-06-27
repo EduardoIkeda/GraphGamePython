@@ -1,3 +1,8 @@
+"""
+Aqui você vai fazer tudo relacionado a fase do jogo, como o peso dos vértices,
+a geraçao das fases, localização de chave e portao.
+"""
+
 import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -6,6 +11,7 @@ import random
 from Interface import Interface
 
 class Level:
+    #Inicializa a fase com o tamanho dela
     def __init__(self, levelSize):
         self.levelSize = levelSize
 
