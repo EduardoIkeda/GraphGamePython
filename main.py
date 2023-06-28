@@ -17,7 +17,7 @@ from Level import Level
 
 # Variáveis globais
 player = Player("Ikeda", 20, 20)
-interface = Interface("Game of the year", player)
+interface = Interface("Not Game of the year", player)
 
 #Define o tamanho da fase (Quantidade de vertices)
 x = int(input("Digite o tamanho da fase:\n"))
