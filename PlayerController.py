@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 import random
-
+import pandas
 class PlayerController:
     # Função para atualizar a posição do jogador
     def update_player_position(interface, player, new_position):
