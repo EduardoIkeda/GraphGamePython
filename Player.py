@@ -18,19 +18,25 @@ class Player:
     # Dar dano no jogador
     #TODO: Precisa verificar se o jogador morre
     def takeDamage(self, dano):
-        self.__life -= dano
+        self.__currentLife -= dano
     
     # Retorna a vida atual
     def getLife(self):
-        return self.__life
+        return self.__currentLife
+    
+    def resetLife(self):
+        self.__currentLife = self.__life
+    
+    def resetStamina(self):
+        self.__currentStamina = self.stamina
     
     # decrementar a stamina
     def lossStamina(self, cost):
-        self.__stamina -= cost
+        self.__currentStamina -= cost
     
     # Retorna a stamina atual
     def getStamina(self):
-        return self.__stamina
+        return self.__currentStamina
     
     # Altera posição do jogador
     def setPosition(self, new_position):

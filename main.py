@@ -17,11 +17,11 @@ from Level import Level
 
 # Variáveis globais
 player = Player("Ikeda", 20, 20)
-interface = Interface("Not Game of the year", player)
+interface = Interface("Game of the year", player)
 
 #Define o tamanho da fase (Quantidade de vertices)
-x = int(input("Digite o tamanho da fase:\n"))
-
+# x = int(input("Digite o tamanho da fase:\n"))
+x= 20
 #Faz a criação do grafo
 level = Level(x)
 graph = level.generate_level(interface)
@@ -33,7 +33,6 @@ interface.createGameFrame()
 
 # Executar a janela do jogo
 tk.mainloop()
-
 
 #NOTA: ESTÁ FUNCIONANDO A GERAÇÃO DO GRAFO, A VISUALIZAÇÃO E A MOVIMENTAÇÃO. 
 #ESTÁ FALTANDO IMPLEMENTAR AS REGRAS DE JOGO

@@ -11,6 +11,10 @@ import random
 from Interface import Interface
 
 class Level:
+    mountain = "red"
+    forest = "orange"
+    plains = "green"
+
     #Inicializa a fase com o tamanho dela
     def __init__(self, levelSize):
         self.levelSize = levelSize
@@ -22,20 +26,26 @@ class Level:
 
         # Adicionar nós e arestas aleatórias ao grafo
         graph.add_node(1)  # Nó inicial
+
+        terrain_choice = [self.plains, self.forest, self.mountain]
         
         for i in range(2, self.levelSize + 1):
             parent_node = random.randint(1, i - 1)  # Selecionar um nó pai aleatório
             graph.add_edge(parent_node, i)  # Adicionar aresta entre o nó pai e o novo nó
 
+        for node in graph.nodes:
+            random_terrain = random.choice(terrain_choice)
+            nx.set_node_attributes(graph, {node: {'color': random_terrain}})
+
         return graph
     
-    def refreshLevel():
-        teste = 1
+    def getTerrainTypeColor(self):
+        return self.plains, self.forest, self.mountain
 
     def generate_level(self, interface: Interface):
         startNode = 1
         graph = self._generate_random_graph()
-        interface.setCreatedGraph(graph)
+        interface.setupCreatedGraph(graph)
         interface.initVisibleNodes()
 
         interface.refreshPlayerView(startNode)

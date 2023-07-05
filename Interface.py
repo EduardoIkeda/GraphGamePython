@@ -4,19 +4,21 @@ da interface ou a execução de botões por meio da interface
 """
 
 import tkinter as tk
+from tkinter import ttk
 import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PlayerController import PlayerController
 
 class Interface:
-
     def __init__(self, gameTitle, player):
         # Declara o player para poder pegar as variáveis de vida e stamina para atualizar a interface
         self.player = player
 
         # Root é a janela da interface, dentro dela vão os frames
         self.root = tk.Tk()
+        self.style = ttk.Style()
+
         self.root.title = gameTitle
 
         # Mensagem para o usuário, por enquanto identifica a casa atual dele
@@ -30,24 +32,47 @@ class Interface:
         # Criar canvas para exibir o grafo
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.root)
         self.canvas.get_tk_widget().pack()
-        
-        # Cria os atributos de botão que vão ser criados depois
-        self.move_entry = None
-        self.move_button = None
 
     def createGameFrame(self):
         #Cria o quadro em que vão ser inserido os botões
-        self.game = tk.Frame(self.root)
+        self.healthStatus = tk.Frame(self.root, width=500, height=15)
+        self.staminaStatus = tk.Frame(self.root, width=500, height=10)
+        self.playerController = tk.Frame(self.root, width=500, height=30)
+
+        self.healthbar = ttk.Progressbar(self.healthStatus, orient=tk.HORIZONTAL, length=200, mode='determinate', style='health.Horizontal.TProgressbar')
+        self.healthbar.pack()
+        self.healthbar['value'] = 100
+
+        self.staminabar = ttk.Progressbar(self.healthStatus, orient=tk.HORIZONTAL, length=200, mode='determinate', style='stamina.Horizontal.TProgressbar')
+        self.staminabar.pack()
+        self.staminabar['value'] = 100
+
+        self.style.theme_use('default')
+        self.style.configure('health.Horizontal.TProgressbar',
+            thickness=15,
+            background='red')
+    
+        self.style.configure('stamina.Horizontal.TProgressbar',
+            thickness=10,
+            background='yellow')
+
         # Criar campo de entrada para movimentar o jogador
-        self.move_entry = tk.Entry(self.game)
+        self.move_entry = tk.Entry(self.playerController)
         self.move_entry.pack(side=tk.LEFT)
 
         # Criar botão para movimentar o jogador
-        self.move_button = tk.Button(self.game, text="Mover", command=self.requestPlayerController)
+        self.move_button = tk.Button(self.playerController, text="Mover", command=self.requestPlayerControllerPosition)
         self.move_button.pack(side=tk.LEFT)
-        self.game.pack()
 
-    def requestPlayerController(self):
+        self.rest_button = tk.Button(self.playerController, text="Descansar", command=self.requestPlayerControllerRest)
+        self.rest_button.pack(side=tk.BOTTOM)
+
+        self.healthStatus.pack(side = "left")
+        self.staminaStatus.pack()
+        self.playerController.pack(side = "right")
+        
+
+    def requestPlayerControllerPosition(self):
         # Pega o valor do campo de texto da interface e atribui como nova posição
         new_position = self.move_entry.get()
 
@@ -58,6 +83,10 @@ class Interface:
             PlayerController.update_player_position(self, self.player, new_position)
         else:
             print("Valor inválido!")
+
+    def requestPlayerControllerRest(self):
+        # Verifica se é um número
+        PlayerController.restPlayer(self)
 
     # Muda a mensagem que aparece pro jogador
     def setPlayerMessage(self, message):
@@ -77,15 +106,18 @@ class Interface:
     def refreshPlayerView(self, playerPosition):
         # Limpar o grafo anterior
         self.ax.clear()
+
+        node_colors = nx.get_node_attributes(self.graph, 'color')
         
         # Atualiza o novo grafo
         nx.draw(self.graph.subgraph(self.visible_nodes), self.node_position, with_labels=True, ax=self.ax)
-        nx.draw_networkx_nodes(self.graph, self.node_position, nodelist=[playerPosition], node_color='r')
+        nx.draw_networkx_nodes(self.graph, self.node_position, nodelist=self.visible_nodes, node_color=[node_colors[node] for node in self.visible_nodes], node_size=500)
+        nx.draw_networkx_nodes(self.graph, self.node_position, nodelist=[playerPosition], node_color='blue', node_size=500)
 
         # Atualizar a janela com o novo grafo
         self.canvas.draw()
 
     # atribui a interface o grafo gerado pelo level e a posição dos vértices na tela
-    def setCreatedGraph(self, graph):
+    def setupCreatedGraph(self, graph):
         self.graph = graph
         self.node_position = nx.spring_layout(self.graph)
