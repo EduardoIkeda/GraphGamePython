@@ -7,8 +7,10 @@ class Player:
     # Inicializa o jogador
     def __init__(self, name, life, stamina):
         self.__life = life
+        self.__currentLife = self.__life
         self.__name = name
         self.__stamina = stamina
+        self.__currentStamina = self.__stamina
         self.__position = 1
 
     # Retorna o nome do jogador
@@ -28,7 +30,7 @@ class Player:
         self.__currentLife = self.__life
     
     def resetStamina(self):
-        self.__currentStamina = self.stamina
+        self.__currentStamina = self.__stamina
     
     # decrementar a stamina
     def lossStamina(self, cost):
@@ -45,7 +47,3 @@ class Player:
     # Retorna a posição atual do jogador
     def getPosition(self):
         return self.__position
-
-
-
-        

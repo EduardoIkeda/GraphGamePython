@@ -41,11 +41,13 @@ class Interface:
 
         self.healthbar = ttk.Progressbar(self.healthStatus, orient=tk.HORIZONTAL, length=200, mode='determinate', style='health.Horizontal.TProgressbar')
         self.healthbar.pack()
-        self.healthbar['value'] = 100
+        
 
         self.staminabar = ttk.Progressbar(self.healthStatus, orient=tk.HORIZONTAL, length=200, mode='determinate', style='stamina.Horizontal.TProgressbar')
         self.staminabar.pack()
-        self.staminabar['value'] = 100
+        self.refreshPlayerStatus()
+        self.healthbar['maximum'] = self.player.getLife()
+        self.staminabar['maximum'] = self.player.getStamina()
 
         self.style.theme_use('default')
         self.style.configure('health.Horizontal.TProgressbar',
@@ -85,8 +87,7 @@ class Interface:
             print("Valor inválido!")
 
     def requestPlayerControllerRest(self):
-        # Verifica se é um número
-        PlayerController.restPlayer(self)
+        PlayerController.restPlayer(self.player, self)
 
     # Muda a mensagem que aparece pro jogador
     def setPlayerMessage(self, message):
@@ -121,3 +122,7 @@ class Interface:
     def setupCreatedGraph(self, graph):
         self.graph = graph
         self.node_position = nx.spring_layout(self.graph)
+
+    def refreshPlayerStatus(self):
+        self.healthbar['value'] = self.player.getLife()
+        self.staminabar['value'] = self.player.getStamina()

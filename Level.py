@@ -37,10 +37,22 @@ class Level:
             random_terrain = random.choice(terrain_choice)
             nx.set_node_attributes(graph, {node: {'color': random_terrain}})
 
+        nx.set_node_attributes(graph, {1: {'color': self.plains}})
+
         return graph
     
     def getTerrainTypeColor(self):
         return self.plains, self.forest, self.mountain
+    
+    def getTerrainStaminaCost(self, attribute):
+        if(attribute == self.plains):
+            return 1
+        elif(attribute == self.forest):
+            return 2
+        elif(attribute == self.mountain):
+            return 4
+        else:
+            return 0
 
     def generate_level(self, interface: Interface):
         startNode = 1
