@@ -31,17 +31,28 @@ class PlayerController:
                 interface.addVisibleNodes(player.getPosition())
                 # Atualiza o mapa para o jogador.
                 interface.refreshPlayerView(player.getPosition())
-                # Altera a mensagem com a nova posição do jogador
+                
+                # Perda de stamina
                 player.lossStamina(staminaCost)
 
+                # Perda de vida
+                #if():
+                    #player.takeDamage(4)
+                    
+                if(player.getLife() <= 0):
+                    interface.setPlayerMessage("O jogador morreu. Fim de jogo!")
+
+                # Atualiza a vida e a stamina
                 interface.refreshPlayerStatus()
 
+                # Altera a mensagem com a nova posição do jogador
                 interface.setPlayerMessage("Você está no lugar " + str(player.getPosition()))
             else:
                 interface.setPlayerMessage("Stamina insuficiente!")    
         else:
             interface.setPlayerMessage("Movimento inválido!")
     
+    # Função para retornar vida e stamina ao máximo
     def restPlayer(player, interface):
         player.resetLife()
         player.resetStamina()

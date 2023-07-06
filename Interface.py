@@ -34,17 +34,19 @@ class Interface:
         self.canvas.get_tk_widget().pack()
 
     def createGameFrame(self):
-        #Cria o quadro em que vão ser inserido os botões
+        # Cria o quadro em que vão ser inserido os botões
         self.healthStatus = tk.Frame(self.root, width=500, height=15)
         self.staminaStatus = tk.Frame(self.root, width=500, height=10)
         self.playerController = tk.Frame(self.root, width=500, height=30)
 
+        # Cria a barra de vida
         self.healthbar = ttk.Progressbar(self.healthStatus, orient=tk.HORIZONTAL, length=200, mode='determinate', style='health.Horizontal.TProgressbar')
         self.healthbar.pack()
         
-
+        # Cria a barra de stamina
         self.staminabar = ttk.Progressbar(self.healthStatus, orient=tk.HORIZONTAL, length=200, mode='determinate', style='stamina.Horizontal.TProgressbar')
         self.staminabar.pack()
+
         self.refreshPlayerStatus()
         self.healthbar['maximum'] = self.player.getLife()
         self.staminabar['maximum'] = self.player.getStamina()
@@ -66,14 +68,15 @@ class Interface:
         self.move_button = tk.Button(self.playerController, text="Mover", command=self.requestPlayerControllerPosition)
         self.move_button.pack(side=tk.LEFT)
 
+        # Criar botão para descansar o jogador
         self.rest_button = tk.Button(self.playerController, text="Descansar", command=self.requestPlayerControllerRest)
         self.rest_button.pack(side=tk.BOTTOM)
 
+        # Decide o posicionamento de cada frame
         self.healthStatus.pack(side = "left")
         self.staminaStatus.pack()
         self.playerController.pack(side = "right")
         
-
     def requestPlayerControllerPosition(self):
         # Pega o valor do campo de texto da interface e atribui como nova posição
         new_position = self.move_entry.get()
@@ -84,15 +87,16 @@ class Interface:
             # Solicita atualização da posição do jogador no grafo
             PlayerController.update_player_position(self, self.player, new_position)
         else:
-            print("Valor inválido!")
+            self.setPlayerMessage("Valor inválido!")
 
     def requestPlayerControllerRest(self):
         PlayerController.restPlayer(self.player, self)
 
-    # Muda a mensagem que aparece pro jogador
-    def setPlayerMessage(self, message):
-        self.playerMessage.configure(text=message)
-    
+    # Atribui a interface o grafo gerado pelo level e a posição dos vértices na tela
+    def setupCreatedGraph(self, graph):
+        self.graph = graph
+        self.node_position = nx.spring_layout(self.graph)
+
     # Inicializa o grafo configurando o node inicial e seus vizinhos como visiveis
     def initVisibleNodes(self):
         self.visible_nodes = set([1])
@@ -118,11 +122,11 @@ class Interface:
         # Atualizar a janela com o novo grafo
         self.canvas.draw()
 
-    # atribui a interface o grafo gerado pelo level e a posição dos vértices na tela
-    def setupCreatedGraph(self, graph):
-        self.graph = graph
-        self.node_position = nx.spring_layout(self.graph)
-
+    # Atualiza as barras de vida e stamina
     def refreshPlayerStatus(self):
         self.healthbar['value'] = self.player.getLife()
         self.staminabar['value'] = self.player.getStamina()
+
+    # Muda a mensagem que aparece pro jogador
+    def setPlayerMessage(self, message):
+        self.playerMessage.configure(text=message)
