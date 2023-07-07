@@ -12,6 +12,7 @@ class Player:
         self.__stamina = stamina
         self.__currentStamina = self.__stamina
         self.__position = 1
+        self.__key = 0
 
     # Retorna o nome do jogador
     def getName(self):
@@ -47,3 +48,11 @@ class Player:
     # Retorna a posição atual do jogador
     def getPosition(self):
         return self.__position
+    
+    #Retorna se o jogador possui a chave
+    def getKey(self):
+        return self.__key
+    
+    #Altera se o jogador possui a chave
+    def setKey(self):
+        self.__key = 1

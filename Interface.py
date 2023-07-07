@@ -109,11 +109,12 @@ class Interface:
         self.ax.clear()
 
         node_colors = nx.get_node_attributes(self.graph, 'color')
+        node_edges = nx.get_node_attributes(self.graph, 'edgecolor')
         
         # Atualiza o novo grafo
         nx.draw(self.graph.subgraph(self.visible_nodes), self.node_position, with_labels=True, ax=self.ax)
-        nx.draw_networkx_nodes(self.graph, self.node_position, nodelist=self.visible_nodes, node_color=[node_colors[node] for node in self.visible_nodes], node_size=500)
-        nx.draw_networkx_nodes(self.graph, self.node_position, nodelist=[playerPosition], node_color='blue', node_size=500)
+        nx.draw_networkx_nodes(self.graph, self.node_position, nodelist=self.visible_nodes, node_color=[node_colors[node] for node in self.visible_nodes], node_size=500, edgecolors=[node_edges[node] for node in self.visible_nodes], linewidths=2)
+        nx.draw_networkx_nodes(self.graph, self.node_position, nodelist=[playerPosition], node_color='blue', node_size=500, edgecolors=node_edges[playerPosition], linewidths=2)
 
         # Atualizar a janela com o novo grafo
         self.canvas.draw()
@@ -126,3 +127,14 @@ class Interface:
     def refreshPlayerStatus(self):
         self.healthbar['value'] = self.player.getLife()
         self.staminabar['value'] = self.player.getStamina()
+
+    # Bloqueia entrada de jogador
+    def lockEntry(self):
+        self.move_entry.config(state="disabled")
+        self.move_entry.pack(side=tk.LEFT)
+
+        self.move_button.config(state="disabled")
+        self.move_button.pack(side=tk.LEFT)
+
+        self.rest_button.config(state="disabled")
+        self.rest_button.pack(side=tk.BOTTOM)

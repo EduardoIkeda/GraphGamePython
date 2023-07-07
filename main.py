@@ -21,7 +21,7 @@ interface = Interface("Game of the year", player)
 
 #Define o tamanho da fase (Quantidade de vertices)
 # x = int(input("Digite o tamanho da fase:\n"))
-x= 20
+x= 20 # PRECISA SER PAR
 #Faz a criação do grafo
 level = Level(x)
 graph = level.generate_level(interface)
