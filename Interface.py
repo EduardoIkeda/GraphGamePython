@@ -14,6 +14,8 @@ class Interface:
     def __init__(self, gameTitle, player):
         # Declara o player para poder pegar as variáveis de vida e stamina para atualizar a interface
         self.player = player
+        self.key = None
+        self.location = None
 
         # Root é a janela da interface, dentro dela vão os frames
         self.root = tk.Tk()
@@ -38,13 +40,23 @@ class Interface:
         self.healthStatus = tk.Frame(self.root, width=500, height=15)
         self.staminaStatus = tk.Frame(self.root, width=500, height=10)
         self.playerController = tk.Frame(self.root, width=500, height=30)
+        self.distances = tk.Frame(self.root, width=500, height=30)
 
         self.healthbar = ttk.Progressbar(self.healthStatus, orient=tk.HORIZONTAL, length=200, mode='determinate', style='health.Horizontal.TProgressbar')
-        self.healthbar.pack()
-        
+        self.healthbar.pack(side="left")
+        self.healthtext = tk.Label(self.healthStatus)
+        self.healthtext.pack(side="left")
 
-        self.staminabar = ttk.Progressbar(self.healthStatus, orient=tk.HORIZONTAL, length=200, mode='determinate', style='stamina.Horizontal.TProgressbar')
-        self.staminabar.pack()
+        self.staminabar = ttk.Progressbar(self.staminaStatus, orient=tk.HORIZONTAL, length=200, mode='determinate', style='stamina.Horizontal.TProgressbar')
+        self.staminabar.pack(side="left")
+        self.staminatext = tk.Label(self.staminaStatus)
+        self.staminatext.pack(side="left")
+
+        self.keytext = tk.Label(self.distances)
+        self.keytext.pack()
+        self.locationtext = tk.Label(self.distances)
+        self.locationtext.pack()
+
         self.refreshPlayerStatus()
         self.healthbar['maximum'] = self.player.getLife()
         self.staminabar['maximum'] = self.player.getStamina()
@@ -68,10 +80,11 @@ class Interface:
 
         self.rest_button = tk.Button(self.playerController, text="Descansar", command=self.requestPlayerControllerRest)
         self.rest_button.pack(side=tk.BOTTOM)
-
+        
         self.healthStatus.pack(side = "left")
-        self.staminaStatus.pack()
+        self.staminaStatus.pack(side = "left")
         self.playerController.pack(side = "right")
+        self.distances.pack(side="bottom")
         
 
     def requestPlayerControllerPosition(self):
@@ -127,6 +140,10 @@ class Interface:
     def refreshPlayerStatus(self):
         self.healthbar['value'] = self.player.getLife()
         self.staminabar['value'] = self.player.getStamina()
+        self.healthtext['text'] = self.player.getLife()
+        self.staminatext['text'] = self.player.getStamina()
+        self.keytext['text'] = "Chave: " + str(nx.shortest_path_length(self.graph, source=self.player.getPosition(), target=self.key))
+        self.locationtext['text'] = "Saída: " + str(nx.shortest_path_length(self.graph, source=self.player.getPosition(), target=self.location))
 
     # Bloqueia entrada de jogador
     def lockEntry(self):
@@ -138,3 +155,9 @@ class Interface:
 
         self.rest_button.config(state="disabled")
         self.rest_button.pack(side=tk.BOTTOM)
+
+    def setLocation(self, value):
+        self.location = value
+
+    def setKey(self, value):
+        self.key = value

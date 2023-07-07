@@ -50,8 +50,14 @@ class Level:
                 random_terrain = random.choice(terrain_choice)
                 random_edge = random.randint(0, len(edge_choice)-1)
                 edge_color = edge_choice.pop(random_edge)
+                if (edge_color == "purple"):
+                    self.keyLocation = node
+                elif (edge_color == "green"):
+                    self.endLocation = node
                 nx.set_node_attributes(graph, {node: {'color': random_terrain, 'edgecolor': edge_color}})
                 size=size-1
+
+
 
         nx.set_node_attributes(graph, {1: {'color': self.plains, 'edgecolor': "black"}})
 
@@ -75,6 +81,9 @@ class Level:
         graph = self._generate_random_graph()
         interface.setupCreatedGraph(graph)
         interface.initVisibleNodes()
+        
+        interface.setLocation(self.endLocation)
+        interface.setKey(self.keyLocation)
 
         interface.refreshPlayerView(startNode)
 
