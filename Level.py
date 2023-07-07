@@ -11,61 +11,63 @@ import random
 from Interface import Interface
 
 class Level:
-    mountain = "orange"
-    forest = "yellow"
+    # Cores dos terrenos
     plains = "white"
-
-    #Inicializa a fase com o tamanho dela
+    forest = "yellow"
+    mountain = "orange"
+    # Cores dos conteúdos (o que tem dentro do nodo)
+    normal = "black"
+    enemy = "red"
+    key = "purple"
+    gate = "green"
+    
+    # Inicializa a fase com o tamanho dela
     def __init__(self, levelSize):
         self.levelSize = levelSize
 
     # Função para gerar o grafo aleatório
     def _generate_random_graph(self):
-        # Criar um grafo vazio
+        # Cria um grafo vazio
         graph = nx.Graph()
 
-        # Adicionar nós e arestas aleatórias ao grafo
+        # Adiciona nós e arestas aleatórias ao grafo
         graph.add_node(1)  # Nó inicial
-
-        terrain_choice = [self.plains, self.forest, self.mountain]
-        edge_choice = []
-        for i in range(0, (int(self.levelSize/2)) - 1): # red é inimigo, black é node normal, purple é chave, green é Portão
-            edge_choice.append("black")
-            
-        for i in range(0, (int(self.levelSize/2)) - 1): # red é inimigo, black é node normal, purple é chave, green é Portão
-            edge_choice.append("red")
-
-        edge_choice.append("purple")
-        edge_choice.append("green")
-                
-        size = len(edge_choice)
-
-        
         for i in range(2, self.levelSize + 1):
             parent_node = random.randint(1, i - 1)  # Selecionar um nó pai aleatório
             graph.add_edge(parent_node, i)  # Adicionar aresta entre o nó pai e o novo nó
 
+        # Define vetores para escolha de atributos
+        terrain_choice = [self.plains, self.forest, self.mountain]
+        content_choice = []
+        for i in range(0, (int(self.levelSize/2)) - 1):
+            content_choice.append(self.normal) 
+        for i in range(0, (int(self.levelSize/2)) - 1):
+            content_choice.append(self.enemy)
+        content_choice.append(self.key)
+        content_choice.append(self.gate)
+                
+        size = len(content_choice)
+
+        # Define os atributos de cada nodo
+        nx.set_node_attributes(graph, {1: {'color': self.plains, 'edgecolor': self.normal}}) # Nó inicial
         for node in graph.nodes:
             if size>0 and node!=1:
                 random_terrain = random.choice(terrain_choice)
-                random_edge = random.randint(0, len(edge_choice)-1)
-                edge_color = edge_choice.pop(random_edge)
-                if (edge_color == "purple"):
+                random_content = random.randint(0, len(content_choice)-1)
+                content = content_choice.pop(random_content)
+                if (content == self.key):
                     self.keyLocation = node
-                elif (edge_color == "green"):
+                elif (content == self.gate):
                     self.endLocation = node
-                nx.set_node_attributes(graph, {node: {'color': random_terrain, 'edgecolor': edge_color}})
+                nx.set_node_attributes(graph, {node: {'color': random_terrain, 'edgecolor': content}})
                 size=size-1
-
-
-
-        nx.set_node_attributes(graph, {1: {'color': self.plains, 'edgecolor': "black"}})
 
         return graph
     
     def getTerrainTypeColor(self):
         return self.plains, self.forest, self.mountain
     
+    # Retorna o custo de stamina de cada terreno
     def getTerrainStaminaCost(self, attribute):
         if(attribute == self.plains):
             return 1
@@ -76,6 +78,7 @@ class Level:
         else:
             return 0
 
+    # Controla a criação do grafo
     def generate_level(self, interface: Interface):
         startNode = 1
         graph = self._generate_random_graph()
